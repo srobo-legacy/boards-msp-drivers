@@ -7,10 +7,11 @@ endif
 
 all: libdrivers.a
 
-libdrivers.a: usart.o
+libdrivers.a: usart.o xt2.o
 	msp430-ar r $@ $^
 
 usart.o: usart.h
+xt2.o: xt2.h
 
 .PHONY: clean
 
