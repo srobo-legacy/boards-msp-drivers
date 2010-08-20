@@ -80,20 +80,25 @@ interrupt (SCHED_VECTOR) sched_timer_isr(void) {
 	}
 }
 
+#define EN_SCHED_INT()  *(regs.CCTL0) |= CCIE;
+#define DIS_SCHED_INT() *(regs.CCTL0) &= ~CCIE;
+
 void sched_init(void) {
 	*(regs.CTL) = TASSEL_SMCLK   /* Source clock from SMCLK */
 	            | MC_UPTO_CCR0;  /* Count up to CCR0 */
-	*(regs.CCTL0) = CCIE;        /* Enable interrupt on CCR0 */
 	*(regs.CCR0) = SCHED_DIV;
+	EN_SCHED_INT();
 }
 
 void sched_add(sched_task_t *task) {
 	bool added = false;
 	LOOP_Q {
 		if (sched_queue[i].task == NULL) {
+			DIS_SCHED_INT();
 			sched_queue[i].task = task;
 			sched_queue[i].time = sched_time + task->t;
 			added = true;
+			EN_SCHED_INT();
 			break;
 		}
 	}
