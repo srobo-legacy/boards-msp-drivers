@@ -56,11 +56,12 @@ sched_queuetask_t sched_queue[SCHED_QUEUE_SIZE];
 volatile uint16_t sched_time;
 
 #if SCHED_TIMER == 1
-interrupt (TIMERB0_VECTOR) sched_timer_isr(void) {
+#define SCHED_VECTOR TIMERB0_VECTOR
 #else
-interrupt (TIMERA0_VECTOR) sched_timer_isr(void) {
+#define SCHED_VECTOR TIMERA0_VECTOR
 #endif
 
+interrupt (SCHED_VECTOR) sched_timer_isr(void) {
 	sched_time++;
 
 	LOOP_Q {
