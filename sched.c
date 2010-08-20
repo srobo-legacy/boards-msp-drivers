@@ -74,7 +74,7 @@ interrupt (SCHED_VECTOR) sched_timer_isr(void) {
 				sched_queue[i].time = sched_time +
 				               sched_queue[i].task->t;
 			} else {
-				sched_rem(sched_queue[i].task);
+				sched_queue[i].task = NULL;
 			}
 		}
 	}
