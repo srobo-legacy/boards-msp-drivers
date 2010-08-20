@@ -29,7 +29,7 @@ typedef struct {
 } sched_regs_t;
 
 static const sched_regs_t regs = {
-#if SCHED_TIMER == 1
+#if SCHED_TIMER_B == 1
 	.CTL   = &TBCTL,
 	.R     = &TBR,
 	.CCTL0 = &TBCCTL0,
@@ -55,7 +55,7 @@ sched_queuetask_t sched_queue[SCHED_QUEUE_SIZE];
 
 volatile uint16_t sched_time;
 
-#if SCHED_TIMER == 1
+#if SCHED_TIMER_B == 1
 #define SCHED_VECTOR TIMERB0_VECTOR
 #else
 #define SCHED_VECTOR TIMERA0_VECTOR
