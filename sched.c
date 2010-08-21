@@ -88,8 +88,6 @@ void sched_init(void) {
 }
 
 void sched_add(sched_task_t *task) {
-	bool added = false;
-
 	LOOP_Q {
 		if (sched_queue[i].task == NULL) {
 			dint();
@@ -100,14 +98,13 @@ void sched_add(sched_task_t *task) {
 
 			sched_queue[i].task = task;
 			sched_queue[i].time = sched_time + task->t;
-			added = true;
 			eint();
-			break;
+
+			return;
 		}
 	}
 
-	if (!added)
-		while(1); /* No more space for tasks! */
+	while(1); /* No more space for tasks! */
 }
 
 void sched_rem(sched_task_t *task) {
