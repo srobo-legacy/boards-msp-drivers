@@ -90,6 +90,7 @@ void sched_init(void) {
 void sched_add(sched_task_t *task) {
 	LOOP_Q {
 		if (sched_queue[i].task == NULL) {
+			bool restoreint = (READ_SR & GIE) != 0;
 			dint();
 			if( sched_queue[i].task != NULL ) {
 				eint();
@@ -98,7 +99,7 @@ void sched_add(sched_task_t *task) {
 
 			sched_queue[i].task = task;
 			sched_queue[i].time = sched_time + task->t;
-			eint();
+			if (restoreint) eint();
 
 			return;
 		}
