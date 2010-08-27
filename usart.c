@@ -18,6 +18,9 @@
 #include <signal.h>
 #include <sys/cdefs.h>
 
+/* Only build driver functions if a USART device is present */
+#if USART_NDEV > 0
+
 /* Provided by the user of this library */
 extern usart_t usart_config[USART_NDEV];
 
@@ -203,3 +206,5 @@ void usart_rx_gate( uint8_t n, bool en )
 	else
 		*(r->ME) &= ~(r->me_mask_rx);
 }
+
+#endif /* USART_NDEV > 0 */

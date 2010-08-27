@@ -18,6 +18,9 @@
 #include <signal.h>
 #include <sys/cdefs.h>
 
+/* Only build USCI driver functions if a USCI device is present */
+#if USCI_NDEV > 0
+
 /* Provided by the user of this library */
 extern usci_t usci_config[USCI_NDEV];
 
@@ -184,3 +187,5 @@ void usci_rx_gate( uint8_t n, bool en )
 	else
 		*(conf->sel_rx) &= ~(1 << conf->sel_rx_num);
 }
+
+#endif /* USCI_NDEV > 0 */

@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #ifndef __MSP430_HAS_USCI0__
-#warning "This target has no USCI devices -- this almost certainly isn't what you wanted."
+#warning "This target has no USCI devices -- not including USCI driver."
 #define USCI_NDEV 0
 #else
 #ifdef __MSP430_HAS_UART1__
@@ -14,6 +14,9 @@
 #define USCI_NDEV 1
 #endif
 #endif
+
+/* Only include USCI driver functions if a USCI device is present */
+#if USCI_NDEV > 0
 
 /* The user of this library must link in some code that provides an
    array of the following struct with USCI_NDEV entries.
@@ -44,5 +47,7 @@ void usci_tx_start( uint8_t n );
 
 /* Enable/disable the receiver -- pass true for enabled */
 void usci_rx_gate( uint8_t n, bool en );
+
+#endif /* USCI_NDEV > 0 */
 
 #endif	/* __USCI_H */

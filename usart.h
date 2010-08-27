@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #ifndef __MSP430_HAS_UART0__
-#warning "This target has no USART devices -- this almost certainly isn't what you wanted."
+#warning "This target has no USART devices -- not including USART driver."
 #define USART_NDEV 0
 #else
 #ifdef __MSP430_HAS_UART1__
@@ -14,6 +14,9 @@
 #define USART_NDEV 1
 #endif
 #endif
+
+/* Only include these functions if a USART device is present */
+#if USART_NDEV > 0
 
 /* The user of this library must link in some code that provides an
    array of the following struct with USART_NDEV entries.
@@ -44,5 +47,7 @@ void usart_tx_start( uint8_t n );
 
 /* Enable/disable the receiver -- pass true for enabled */
 void usart_rx_gate( uint8_t n, bool en );
+
+#endif /* USART_NDEV > 0 */
 
 #endif	/* __USART_H */
