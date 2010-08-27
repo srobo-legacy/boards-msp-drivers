@@ -89,48 +89,40 @@ void usci_init()
 		const usci_t *conf = usci_config + i;
 
 		/* Hold peripheral in reset during configuration  */
-		*(r->CTL) = SWRST;
+		*(r->CTL1) = UCSWRST;
 
 		/* 8-bit data */
-		*(r->CTL) |= CHAR;
-		/* U1CTL.PENA = 0 : Parity disabled */
-		/* U1CTL.SPB = 0 : One stop bit */
-		/* U1CTL.LISTEN = 0 : Loopback disabled */
-		/* U1CTL.SYNC = 0: UART mode */
-		/* U1CTL.MM = 0 : Idle-line multiprocessor mode */
+		*(r->CTL0) = 0;
+		/* UCAxCTL0.UC7BIT = 0 : 8-bit data */
+		/* UCAxCTL0.UCPEN = 0 : Parity disabled */
+		/* UCAxCTL0.UCSPB = 0 : One stop bit */
+		/* UCAxCTL0.MSB = 0 : LSB first */
+		/* UCAxCTL0.UCSYNC = 0: UART mode */
+		/* UCAxCTL0.UCMODEx = 0 : No multi-processor mode */
 
 		/* Use SMCLK */
-		*(r->TCTL) = SSEL_SMCLK;
-
-		/* URXWIE = 0 : All received bytes trigger interrupt */
-		*(r->RCTL) = 0;
+		*(r->CTL1) = UCSSEL_SMCLK;
 
 		/* Configure baud rate */
 		*(r->BR0) = conf->br0;
 		*(r->BR1) = conf->br1;
 		*(r->MCTL) = conf->mctl;
 
-		/* Enable transmit and receive */
-		*(r->ME) |= r->me_mask_tx | r->me_mask_rx;
-
 		/* These pins please */
 		*(conf->sel_rx) |= (1 << conf->sel_rx_num);
 		*(conf->sel_tx) |= (1 << conf->sel_tx_num);
 
 		/* Take out of reset */
-		*(r->CTL) &= ~SWRST;
+		*(r->CTL1) &= ~UCSWRST;
 
 		/* Enable interrupts */
-		*(r->IE) |= r->me_mask_tx | r->me_mask_rx;
+		*(r->IE) |= r->ie_mask_tx | r->ie_mask_rx;
 	}
 }
 
 void usci_tx_start( uint8_t n )
 {
 	const usci_regs_t *r = regs + n;
-
-	/* Enable the transmitter */
-	*(r->ME) |= r->me_mask_tx;
 
 	/* Trigger an interrupt :-P */
 	*(r->IFG) |= r->ifg_mask_tx;
@@ -143,14 +135,12 @@ static void usci_isr_tx( uint8_t n )
 	const usci_regs_t *r = regs + n;
 	const usci_t *conf = usci_config + n;
 
-	/* Ignore if the transmitter isn't enabled */
-	if( !( *(r->ME) & r->me_mask_tx ) )
-		return;
-
 	if( conf->tx_gen_byte == NULL 
-	    || !conf->tx_gen_byte(&b) )
-		/* Nothing to transmit -- disable the transmitter */
+	    || !conf->tx_gen_byte(&b) ) {
+		/* Nothing to transmit, clear flag */
+		*(r->IFG) &= ~(r->ifg_mask_tx);
 		return;
+	}
 
 	*(r->TXBUF) = b;
 }
@@ -176,21 +166,21 @@ static void usci_isr_rx( uint8_t n )
 	}
 
 #ifdef __MSP430_HAS_USCI0__
-USCI_TX_ISR(0, USCI0TX_VECTOR);
-USCI_RX_ISR(0, USCI0RX_VECTOR);
+USCI_TX_ISR(0, USCIAB0TX_VECTOR);
+USCI_RX_ISR(0, USCIAB0RX_VECTOR);
 #endif
 
 #ifdef __MSP430_HAS_USCI1__
-USCI_TX_ISR(1, USCI1TX_VECTOR);
-USCI_RX_ISR(1, USCI1RX_VECTOR);
+USCI_TX_ISR(1, USCIAB1TX_VECTOR);
+USCI_RX_ISR(1, USCIAB1RX_VECTOR);
 #endif
 
 void usci_rx_gate( uint8_t n, bool en )
 {
-	const usci_regs_t *r = regs + n;
+	const usci_t *conf = usci_config + n;
 
 	if(en)
-		*(r->ME) |= r->me_mask_rx;
+		*(conf->sel_rx) |= (1 << conf->sel_rx_num);
 	else
-		*(r->ME) &= ~(r->me_mask_rx);
+		*(conf->sel_rx) &= ~(1 << conf->sel_rx_num);
 }
