@@ -23,68 +23,59 @@ extern usci_t usci_config[USCI_NDEV];
 
 /* Registers that control the peripheral */
 typedef struct {
-	typeof(U0CTL) *CTL;
-	typeof(U0TCTL) *TCTL;
+	typeof(UCA0CTL0) *CTL0;
+	typeof(UCA0CTL1) *CTL1;
+	typeof(UCA0STAT) *STAT;
 
-	typeof(U0BR0) *BR0;
-	typeof(U0BR1) *BR1;
-	typeof(U0MCTL) *MCTL;
-	typeof(U0RCTL) *RCTL;
+	typeof(UCA0BR0) *BR0;
+	typeof(UCA0BR1) *BR1;
+	typeof(UCA0MCTL) *MCTL;
 	typeof(IE1) *IE;
 	uint8_t ie_mask_tx, ie_mask_rx;
 	typeof(IFG1) *IFG;
 	uint8_t ifg_mask_tx, ifg_mask_rx;
 
-	typeof(ME1) *ME;
-	uint8_t me_mask_tx, me_mask_rx;
-
-	typeof(U0TXBUF) *TXBUF;
-	typeof(U0RXBUF) *RXBUF;
+	typeof(UCA0TXBUF) *TXBUF;
+	typeof(UCA0RXBUF) *RXBUF;
 } usci_regs_t;
 
 static const usci_regs_t regs[USCI_NDEV] =
 {
 #ifdef __MSP430_HAS_USCI0__
 	{
-		.CTL = &U0CTL,
-		.TCTL = &U0TCTL,
-		.BR0 = &U0BR0,
-		.BR1 = &U0BR1,
-		.MCTL = &U0MCTL,
-		.RCTL = &U0RCTL,
-		.IE = &IE1,
-		.ie_mask_tx = UTXIE0,
-		.ie_mask_rx = URXIE0,
-		.IFG = &IFG1,
-		.ifg_mask_tx = UTXIFG0,
-		.ifg_mask_rx = URXIFG0,
-		.ME = &ME1,
-		.me_mask_tx = UTXE0,
-		.me_mask_rx = URXE0,
-		.TXBUF = &U0TXBUF,
-		.RXBUF = &U0RXBUF,
+		.CTL0 = &UCA0CTL0,
+		.CTL1 = &UCA0CTL1,
+		.STAT = &UCA0STAT,
+		.BR0 = &UCA0BR0,
+		.BR1 = &UCA0BR1,
+		.MCTL = &UCA0MCTL,
+		.IE = &IE2,
+		.ie_mask_tx = UCA0TXIE,
+		.ie_mask_rx = UCA0RXIE,
+		.IFG = &IFG2,
+		.ifg_mask_tx = UCA0TXIFG,
+		.ifg_mask_rx = UCA0RXIFG,
+		.TXBUF = &UCA0TXBUF,
+		.RXBUF = &UCA0RXBUF,
 	},
 #endif
 
 #ifdef __MSP430_HAS_USCI1__
 	{
-		.CTL = &U1CTL,
-		.TCTL = &U1TCTL,
-		.BR0 = &U1BR0,
-		.BR1 = &U1BR1,
-		.MCTL = &U1MCTL,
-		.RCTL = &U1RCTL,
-		.IE = &IE2,
-		.ie_mask_tx = UTXIE1,
-		.ie_mask_rx = URXIE1,
-		.IFG = &IFG2,
-		.ifg_mask_tx = UTXIFG1,
-		.ifg_mask_rx = URXIFG1,
-		.ME = &ME2,
-		.me_mask_tx = UTXE1,
-		.me_mask_rx = URXE1,
-		.TXBUF = &U1TXBUF,
-		.RXBUF = &U1RXBUF,
+		.CTL0 = &UCA1CTL0,
+		.CTL1 = &UCA1CTL1,
+		.STAT = &UCA1STAT
+		.BR0 = &UCA1BR0,
+		.BR1 = &UCA1BR1,
+		.MCTL = &UCA1MCTL,
+		.IE = &UC1IE,
+		.ie_mask_tx = UCA1TXIE,
+		.ie_mask_rx = UCARXIE,
+		.IFG = &UC1IFG,
+		.ifg_mask_tx = UCA1TXIFG,
+		.ifg_mask_rx = UCA1RXIFG,
+		.TXBUF = &UCA1TXBUF,
+		.RXBUF = &UCA1RXBUF,
 	},
 #endif
 };
