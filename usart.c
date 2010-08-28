@@ -133,7 +133,7 @@ void usart_init()
 		*(r->CTL) &= ~SWRST;
 
 		/* Enable interrupts */
-		*(r->IE) |= r->me_mask_tx | r->me_mask_rx;
+		*(r->IE) |= r->ifg_mask_tx | r->ifg_mask_rx;
 	}
 }
 
