@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 #ifndef __MSP430_HAS_UART0__
-#warning "This target has no USART devices -- not including USART driver."
 #define USART_NDEV 0
 #else
 #ifdef __MSP430_HAS_UART1__

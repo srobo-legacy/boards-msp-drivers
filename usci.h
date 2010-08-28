@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 #ifndef __MSP430_HAS_USCI0__
-#warning "This target has no USCI devices -- not including USCI driver."
 #define USCI_NDEV 0
 #else
 #ifdef __MSP430_HAS_UART1__
