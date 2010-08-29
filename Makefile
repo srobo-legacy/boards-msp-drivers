@@ -7,7 +7,7 @@ endif
 
 all: libdrivers.a
 
-libdrivers.a: usart.o usci.o xt2.o sched.o
+libdrivers.a: usart.o usci.o xt2.o sched.o pinint.o
 	msp430-ar r $@ $^
 
 usart.o: usart.h
