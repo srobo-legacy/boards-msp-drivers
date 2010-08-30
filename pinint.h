@@ -22,13 +22,6 @@
 
 #define PININT_NCONF 4
 
-enum {
-	PININT_BUTTON,
-	PININT_TOKEN,
-	PININT_BB,
-	PININT_CHARGER
-};
-
 typedef struct {
 	uint16_t mask;
 	void (*int_cb) (uint16_t flags);
