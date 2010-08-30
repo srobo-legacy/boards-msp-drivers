@@ -24,6 +24,8 @@ pinint_conf_t pinint_conf[PININT_NCONF];
 static void pinint_isr(void) {
 	uint8_t i;
 	uint16_t flags = ((uint16_t)P2IFG) << 8 | P1IFG;
+	/* Clear flags */
+	P1IFG = P2IFG = 0;
 
 	for (i = 0; i < PININT_NCONF; i++) {
 		/* Check flags against mask */
@@ -31,9 +33,6 @@ static void pinint_isr(void) {
 			pinint_conf[i].int_cb(flags);
 		}
 	}
-	/* Clear flags */
-	P1IFG = 0;
-	P2IFG = 0;
 }
 
 interrupt (PORT1_VECTOR) p1_isr(void) {
