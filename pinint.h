@@ -20,15 +20,14 @@
 #include <io.h>
 #include <stdint.h>
 
-#define PININT_NCONF 4
-
 typedef struct {
 	uint16_t mask;
 	void (*int_cb) (uint16_t flags);
 } pinint_conf_t;
 
-/* Each module that requires access to pin interrupts should set-up
- * the mask and callback for its specific inputs in the following array */
-extern pinint_conf_t pinint_conf[PININT_NCONF];
+void pinint_init( void );
+
+/* Not interrupt safe -- only call during initialisation */
+void pinint_add( pinint_conf_t* conf );
 
 #endif /* __PININT_H */

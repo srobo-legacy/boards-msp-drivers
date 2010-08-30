@@ -17,21 +17,26 @@
 
 #include <io.h>
 #include <signal.h>
+#include <stddef.h>
 #include "pinint.h"
 
-pinint_conf_t pinint_conf[PININT_NCONF];
+static pinint_conf_t *pinint[PININT_NCONF];
+
+#define foreach_int(p) for( p=pinint; (p-pinint) < PININT_NCONF; p++ )
 
 static void pinint_isr(void) {
-	uint8_t i;
+	pinint_conf_t **p;
 	uint16_t flags = ((uint16_t)P2IFG) << 8 | P1IFG;
 	/* Clear flags */
 	P1IFG = P2IFG = 0;
 
-	for (i = 0; i < PININT_NCONF; i++) {
+	foreach_int(p) {
+		if( *p == NULL )
+			continue;
+
 		/* Check flags against mask */
-		if (pinint_conf[i].mask & flags) {
-			pinint_conf[i].int_cb(flags);
-		}
+		if ( (*p)->mask & flags )
+			(*p)->int_cb(flags);
 	}
 }
 
@@ -41,4 +46,26 @@ interrupt (PORT1_VECTOR) p1_isr(void) {
 
 interrupt (PORT2_VECTOR) p2_isr(void) {
 	pinint_isr();
+}
+
+void pinint_init( void )
+{
+	uint8_t i;
+	for( i=0; i<PININT_NCONF; i++ )
+		pinint[i] = NULL;
+}
+
+void pinint_add( pinint_conf_t* conf )
+{
+	pinint_conf_t **p;
+
+	foreach_int(p) {
+		if( (*p) == NULL ) {
+			*p = conf;
+			return;
+		}
+	}
+
+	/* Too many pin interrupts registered -- increase PININT_NCONF */
+	while(1);
 }
