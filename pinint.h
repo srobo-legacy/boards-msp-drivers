@@ -28,6 +28,6 @@ typedef struct {
 void pinint_init( void );
 
 /* Not interrupt safe -- only call during initialisation */
-void pinint_add( pinint_conf_t* conf );
+void pinint_add( const pinint_conf_t* conf );
 
 #endif /* __PININT_H */

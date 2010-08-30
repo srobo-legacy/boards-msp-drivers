@@ -20,12 +20,12 @@
 #include <stddef.h>
 #include "pinint.h"
 
-static pinint_conf_t *pinint[PININT_NCONF];
+static const pinint_conf_t *pinint[PININT_NCONF];
 
 #define foreach_int(p) for( p=pinint; (p-pinint) < PININT_NCONF; p++ )
 
 static void pinint_isr(void) {
-	pinint_conf_t **p;
+	const pinint_conf_t **p;
 	uint16_t flags = ((uint16_t)P2IFG) << 8 | P1IFG;
 	/* Clear flags */
 	P1IFG = P2IFG = 0;
@@ -55,9 +55,9 @@ void pinint_init( void )
 		pinint[i] = NULL;
 }
 
-void pinint_add( pinint_conf_t* conf )
+void pinint_add( const pinint_conf_t* conf )
 {
-	pinint_conf_t **p;
+	const pinint_conf_t **p;
 
 	foreach_int(p) {
 		if( (*p) == NULL ) {
