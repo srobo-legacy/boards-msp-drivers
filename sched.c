@@ -87,7 +87,7 @@ void sched_init(void) {
 	*(regs.CCTL0) |= CCIE;
 }
 
-void sched_add(sched_task_t *task) {
+void sched_add(const sched_task_t *task) {
 	LOOP_Q {
 		if (sched_queue[i].task == NULL) {
 			bool restoreint = (READ_SR & GIE) != 0;
@@ -108,7 +108,7 @@ void sched_add(sched_task_t *task) {
 	while(1); /* No more space for tasks! */
 }
 
-void sched_rem(sched_task_t *task) {
+void sched_rem(const sched_task_t *task) {
 	LOOP_Q {
 		if (sched_queue[i].task == task) {
 			sched_queue[i].task = NULL;

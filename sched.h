@@ -17,9 +17,9 @@ typedef struct {
 void sched_init(void);
 
 /* Add a task to the schedule queue */
-void sched_add(sched_task_t *task);
+void sched_add(const sched_task_t *task);
 
 /* Remove a task from the schedule queue */
-void sched_rem(sched_task_t *task);
+void sched_rem(const sched_task_t *task);
 
 #endif /* __SCHED_H */
