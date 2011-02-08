@@ -45,7 +45,7 @@ static const sched_regs_t regs = {
 };
 
 typedef struct {
-	sched_task_t *task;
+	const sched_task_t *task;
 	uint16_t time;
 } sched_queuetask_t;
 
