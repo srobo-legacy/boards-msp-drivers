@@ -14,6 +14,12 @@ typedef struct {
 	void *udata;
 } sched_task_t;
 
+/* The time */
+extern volatile uint16_t sched_time;
+
+/* Return the number of ticks since before */
+#define sched_time_since(before) ( sched_time >= before? sched_time - before : (0xffff - before) + sched_time )
+
 void sched_init(void);
 
 /* Add a task to the schedule queue */
